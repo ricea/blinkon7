@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<title>Demo 4</title>
+<script src="streaming-element.js"></script>
+<script src="common.js"></script>
+<script src="parse-json.js"></script>
+<script src="split-stream.js"></script>
+<script src="escape.js"></script>
+<link rel=stylesheet href="common.css">
+<link rel=stylesheet href="code.css">
+<style>
+#bugs {
+    font-size: 16pt;
+}
+
+#bugs th {
+    text-align: left;
+}
+
+#bugs tr:nth-child(even) {
+    background-color: rgb(248, 248, 248);
+}
+</style>
+
+<pre class="code"><span class="keyword">return</span> result.body
+  .pipeThrough(<span class="keyword">new</span> <span class="type">TextDecoder</span>())
+  .pipeThrough(splitStream(<span class="string">'\n'</span>))
+  .pipeThrough(parseJSON())
+  .pipeThrough(jsonToHTML)
+  .pipeTo(streamingElement.writable);
+</pre>
+<table id=button-table>
+  <tr>
+    <td><button id="streaming">json &rightarrow; stream</button>
+    <td align=right id=next><a href=page5.html>Next >>></a>
+</table>
+<div><streaming-element id="target"></streaming-element></div>
+<script>
+let streaming = document.querySelector('#streaming');
+let streamingElement = document.querySelector('#target');
+document.querySelector('#next').style.visibility = 'visible';
+
+async function fetchThenJsonStream() {
+  const result = await fetch('bugs.json',
+                             {
+                               mode: 'same-origin',
+                               headers: {
+                                 'Cache-Control': 'no-cache, no-store'
+                               }
+                             });
+  const jsonToHTML = new TransformStream({
+    start(controller) {
+      controller.enqueue('<table id=bugs><tr><th>ID<th>Status<th>Summary');
+    },
+    transform(chunk, controller) {
+      controller.enqueue('<tr><td>' +
+                         chunk.map(s => escape(s)).join('<td>'));
+    },
+    flush(controller) {
+      controller.enqueue('</table>');
+    }
+  });
+  return result.body
+    .pipeThrough(new TextDecoder())
+    .pipeThrough(splitStream('\n'))
+    .pipeThrough(parseJSON())
+    .pipeThrough(jsonToHTML)
+    .pipeTo(streamingElement.writable);
+}
+  
+streaming.onclick = async () => {
+  setTimeout(fetchThenJsonStream, 0);
+};
+
+</script>

@@ -1,0 +1,7 @@
+<pre class=code><span class="keyword">const</span> <span class="variable-name">streamingElement</span> =
+  document.querySelector(<span class="string">'#target'</span>);
+<span class="keyword">const</span> <span class="variable-name">response</span> = <span class="keyword">await</span> fetch(<span class="string">'code.html'</span>);
+response.body
+  .pipeThrough(<span class="keyword">new</span> <span class="type">TextDecoder</span>())
+  .pipeTo(streamingElement.writable);
+</pre>

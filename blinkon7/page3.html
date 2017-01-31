@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<title>Demo 3</title>
+<script src="streaming-element.js"></script>
+<script src="common.js"></script>
+<link rel=stylesheet href="common.css">
+<style>
+#bugs {
+    font-size: 16pt;
+}
+
+#bugs th {
+    text-align: left;
+}
+
+#bugs tr:nth-child(even) {
+    background-color: rgb(248, 248, 248);
+}
+</style>
+
+<div><img src="https://i.imgur.com/iR98Hex.gif" alt="stream"></div>
+<table id=button-table>
+  <tr>
+    <td><button id="atonce">fetch &rightarrow; innerHTML</button>
+  <button id="streaming">fetch &rightarrow; stream</button>
+  <button id="reset">Reset</button>
+    <td align=right id=next><a href=page4.html>Next >>></a>
+</table>
+<div id="target"></div>
+<script>
+let target = document.querySelector('#target');
+let atonce = document.querySelector('#atonce');
+let streaming = document.querySelector('#streaming');
+let reset = document.querySelector('#reset');
+document.querySelector('#next').style.visibility = 'visible';
+
+function resetTarget() {
+  target.innerHTML = '';
+}
+
+async function fetchThenInnerHTML() {
+  const bulk = document.createElement('div');
+  target.appendChild(bulk);
+  const body = await fetch('bugs.html', {
+    mode: 'same-origin',
+    headers: {
+      'Cache-Control': 'no-cache, no-store'
+    }
+  })
+    .then(response => response.text());
+  bulk.innerHTML = body;
+}
+
+async function fetchThenStream() {
+  const streamingElement = document.createElement('streaming-element');
+  target.appendChild(streamingElement);
+  const result = await fetch('bugs.html', {
+    mode: 'same-origin',
+    headers: {
+      'Cache-Control': 'no-cache, no-store'
+    }
+  });
+  return result.body
+    .pipeThrough(new TextDecoder())
+    .pipeTo(streamingElement.writable);
+}
+  
+atonce.onclick = async () => {
+  resetTarget();
+  // Insert the html asynchronously to stop the browser whining that the onclick
+  // handler is taking too long.
+  setTimeout(fetchThenInnerHTML, 0);
+};
+
+streaming.onclick = async () => {
+  resetTarget();
+  setTimeout(fetchThenStream, 0);
+};
+
+reset.onclick = resetTarget;
+
+</script>

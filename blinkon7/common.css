@@ -1,0 +1,22 @@
+body {
+    font-size: 36pt;
+    font-family: sans-serif;
+}
+
+button {
+    font-size: inherit;
+}
+
+#next {
+    text-align: right;
+    visibility: hidden;
+    font-size: 24pt;
+}
+
+#next a {
+    text-decoration-line: none;
+}
+
+#button-table {
+    width: 100%;
+}

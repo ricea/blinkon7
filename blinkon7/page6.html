@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<title>Demo 5</title>
+<script src="streaming-element.js"></script>
+<script src="parse-json.js"></script>
+<script src="split-stream.js"></script>
+<link rel=stylesheet href="common.css">
+<link rel=stylesheet href="code.css">
+<style>
+#bugs {
+    font-size: 16pt;
+}
+
+#bugs th {
+    text-align: left;
+}
+
+#bugs tr:nth-child(even) {
+    background-color: rgb(248, 248, 248);
+}
+</style>
+
+<pre class="code"><span class="keyword">return</span> result.body
+  .pipeThrough(<span class="keyword">new</span> <span class="type">TextDecoder</span>())
+  .pipeThrough(splitStream(<span class="string">'\n'</span>))
+  .pipeThrough(parseJSON())
+  .pipeThrough(jsonToElementTransform)
+  .pipeTo(appendChildWritableStream(table));
+</pre>
+<table id=button-table>
+  <tr>
+    <td><button id="streaming">json &rightarrow; DOM node stream</button>
+    <td align=right>Go back to slides</td>
+</table>
+<div id=target></div>
+<script>
+let streaming = document.querySelector('#streaming');
+let target = document.querySelector('#target');
+
+function appendChildWritableStream(parentNode) {
+  return new WritableStream({
+    write(chunk) {
+      parentNode.appendChild(chunk);
+    }
+  });
+}
+
+function createTable(parentElement) {
+  const table = document.createElement('table');
+  table.id = 'bugs';
+  const tr = document.createElement('tr');
+  for (const heading of ['ID', 'Status', 'Summary']) {
+    const th = document.createElement('th');
+    th.textContent = heading;
+    tr.appendChild(th);
+  }
+  table.appendChild(tr);
+  parentElement.appendChild(table);
+  return table;
+}
+
+async function fetchThenJsonToDom() {
+  const jsonToElementTransform = new TransformStream({
+    transform(chunk, controller) {
+      const tr = document.createElement('tr');
+      for (const cell of chunk) {
+        const td = document.createElement('td');
+        td.textContent = cell;
+        tr.appendChild(td);
+      }
+      controller.enqueue(tr);
+    }
+  });
+      
+  const result = await fetch('bugs.json',
+                             {
+                               mode: 'same-origin',
+                               headers: {
+                                 'Cache-Control': 'no-cache, no-store'
+                               }
+                             });
+  const table = createTable(target);
+  return result.body
+    .pipeThrough(new TextDecoder())
+    .pipeThrough(splitStream('\n'))
+    .pipeThrough(parseJSON())
+    .pipeThrough(jsonToElementTransform)
+    .pipeTo(appendChildWritableStream(table));
+}
+
+streaming.onclick = async () => {
+  setTimeout(fetchThenJsonToDom, 0);
+};
+
+</script>

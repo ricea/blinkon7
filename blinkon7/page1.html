@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<title>Demo 1</title>
+<script src="streaming-element.js"></script>
+<script src="common.js"></script>
+<link rel=stylesheet href="common.css">
+<link rel=stylesheet href="code.css">
+<table id=button-table>
+  <tr>
+    <td align=left><button id="trigger">Trigger</button>
+    <td align=right id=next><a href=page2.html>Next >>></a>
+</table>
+<div><streaming-element id="target"></streaming-element></div>
+<div>&uparrow;&uparrow; <code>&lt;streaming-element&gt;</code> IS HERE &uparrow;&uparrow;</div>
+<script>
+loadOnTrigger('code.html');
+</script>

@@ -1,0 +1,20 @@
+.code {
+    background-color: rgb(245, 242, 240);
+    padding: 16px 16px 16px 16px;
+}
+
+.keyword {
+    color: #7f007f;
+}
+
+.type {
+    color: #228b22;
+}
+
+.variable-name {
+    color: #a0522d;
+}
+
+.string {
+    color: #8b2252;
+}

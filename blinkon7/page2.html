@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<title>Demo 2</title>
+<script src="streaming-element.js"></script>
+<script src="common.js"></script>
+<link rel=stylesheet href="common.css">
+<style>
+.smaller {
+    font-size: 24pt;
+}
+
+.much-smaller {
+    font-size: 18pt;
+}
+
+#lo-tab {
+    font-size: 18pt;
+    border: solid 2px black;
+    border-collapse: collapse;
+}
+
+#lo-tab td {
+    border: solid 2px #888;
+    padding: 9pt;
+}
+
+#left-top {
+    color: #44f;
+}
+
+#right-top {
+    color: #f44;
+}
+
+#bottom {
+    color: #0e0;
+}
+</style>
+
+<table id=button-table>
+  <tr>
+    <td align=left><button id="trigger">Trigger</button>
+    <td align=right id=next><a href=page3.html>Next >>></a>
+</table>
+<div><streaming-element id="target"></streaming-element></div>
+<script>
+loadOnTrigger('/stream');
+</script>

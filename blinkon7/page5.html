@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<title>Demo 4 TransformStream</title>
+<link rel=stylesheet href="common.css">
+<link rel=stylesheet href="code.css">
+
+<style>
+#smaller {
+  margin: 0px;
+  font-size: 32pt;
+}
+</style>
+<pre class="code" id="smaller"><span class="keyword">const</span> <span class="variable-name">jsonToHTML</span> = <span class="keyword">new</span> <span class="type">TransformStream</span>({
+  start(controller) {
+    controller.enqueue(
+      <span class="string">'&lt;table id=bugs&gt;&lt;tr&gt;&lt;th&gt;ID'</span> +
+        <span class="string">'&lt;th&gt;Status&lt;th&gt;Summar</span><span class="string">y</span><span class="string">'</span>);
+  },
+  transform(chunk, controller) {
+    controller.enqueue(
+      <span class="string">'&lt;tr&gt;&lt;td&gt;'</span> + chunk.map(escape).join(<span class="string">'&lt;td&gt;'</span>));
+  },
+  flush(controller) {
+    controller.enqueue(<span class="string">'&lt;/table&gt;'</span>);
+  }
+});
+</pre>
+<table id=button-table>
+  <tr>
+    <td align=right id=next><a href=page6.html>Next >>></a>
+</table>
+<script>
+document.querySelector('#next').style.visibility = 'visible';
+</script>

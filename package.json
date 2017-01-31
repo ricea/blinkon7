@@ -1,0 +1,11 @@
+{
+  "name": "blink-streams-simple-trickle",
+  "version": "1.0.0",
+  "description": "Simple Trickle HTTP Server",
+  "main": "app.js",
+  "author": "ricea@chromium.org",
+  "dependencies": {
+    "express": "^4.14.1"
+  },
+  "private": true
+}
