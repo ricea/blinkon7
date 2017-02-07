@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <title>Demo 3</title>
 <script src="streaming-element.js"></script>
+<script src="streaming-element-backpressure.js"></script>
 <script src="common.js"></script>
 <link rel=stylesheet href="common.css">
 <style>
@@ -22,6 +23,7 @@
   <tr>
     <td><button id="atonce">fetch &rightarrow; innerHTML</button>
   <button id="streaming">fetch &rightarrow; stream</button>
+  <button id="streaming-bp">streaming &rightarrow; stream + backpressure</button>
   <button id="reset">Reset</button>
     <td align=right id=next><a href=page4.html>Next >>></a>
 </table>
@@ -30,6 +32,7 @@
 let target = document.querySelector('#target');
 let atonce = document.querySelector('#atonce');
 let streaming = document.querySelector('#streaming');
+let streaming_bp = document.querySelector('#streaming-bp');
 let reset = document.querySelector('#reset');
 document.querySelector('#next').style.visibility = 'visible';
 
@@ -50,8 +53,8 @@ async function fetchThenInnerHTML() {
   bulk.innerHTML = body;
 }
 
-async function fetchThenStream() {
-  const streamingElement = document.createElement('streaming-element');
+async function fetchThenStream(elementName) {
+  const streamingElement = document.createElement(elementName);
   target.appendChild(streamingElement);
   const result = await fetch('bugs.html', {
     mode: 'same-origin',
@@ -63,7 +66,7 @@ async function fetchThenStream() {
     .pipeThrough(new TextDecoder())
     .pipeTo(streamingElement.writable);
 }
-  
+
 atonce.onclick = async () => {
   resetTarget();
   // Insert the html asynchronously to stop the browser whining that the onclick
@@ -73,7 +76,12 @@ atonce.onclick = async () => {
 
 streaming.onclick = async () => {
   resetTarget();
-  setTimeout(fetchThenStream, 0);
+  setTimeout(() => fetchThenStream('streaming-element'), 0);
+};
+
+streaming_bp.onclick = async () => {
+  resetTarget();
+  setTimeout(() => fetchThenStream('streaming-element-backpressure'), 0);
 };
 
 reset.onclick = resetTarget;
