@@ -29,7 +29,7 @@ customElements.define('streaming-element-backpressure',
 
     function startNewChunk() {
       idlePromise = new Promise(resolve => {
-        window.requestIdleCallback(resolve);
+        window.requestAnimationFrame(resolve);
       });
       charactersWrittenInThisChunk = 0;
     }
