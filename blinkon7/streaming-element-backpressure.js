@@ -22,6 +22,18 @@ customElements.define('streaming-element-backpressure',
       iframe.remove();
     }
 
+    let idlePromise;
+    let charactersWrittenInThisChunk = 0;
+    // Magic number that works in one case on one machine.
+    const charactersPerChunk = 4096;
+
+    function startNewChunk() {
+      idlePromise = new Promise(resolve => {
+        window.requestIdleCallback(resolve);
+      });
+      charactersWrittenInThisChunk = 0;
+    }
+
     this.writable = new WritableStream({
       start: async () => {
         const iframe = await iframeReady;
@@ -29,11 +41,22 @@ customElements.define('streaming-element-backpressure',
         this.appendChild(iframe.contentDocument.querySelector('streaming-element-inner'));
       },
       async write(chunk) {
+        if (idlePromise === undefined) {
+          startNewChunk();
+        }
         let iframe = await iframeReady;
-        iframe.contentDocument.write(chunk);
-        return new Promise(resolve => {
-          window.requestIdleCallback(resolve);
-        });
+        let cursor = 0;
+        while (cursor < chunk.length) {
+          const writeCharacters = Math.min(chunk.length - cursor,
+                                           charactersPerChunk - charactersWrittenInThisChunk);
+          iframe.contentDocument.write(chunk.substr(cursor, writeCharacters));
+          cursor += writeCharacters;
+          charactersWrittenInThisChunk += writeCharacters;
+          if (charactersWrittenInThisChunk === charactersPerChunk) {
+            await idlePromise;
+            startNewChunk();
+          }
+        }
       },
       close: end,
       abort: end
