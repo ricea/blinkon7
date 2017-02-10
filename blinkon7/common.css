@@ -4,13 +4,13 @@ body {
 }
 
 button {
-    font-size: inherit;
+    font-size: 18pt;
 }
 
 #next {
     text-align: right;
     visibility: hidden;
-    font-size: 24pt;
+    font-size: 18pt;
 }
 
 #next a {
