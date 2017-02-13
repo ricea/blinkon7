@@ -30,7 +30,7 @@
 <table id=button-table>
   <tr>
     <td><button id="streaming">json &rightarrow; DOM node stream</button>
-    <td align=right>Go back to slides</td>
+    <td align=right><a href="page1.html">Go back to beginning</a></td>
 </table>
 <div id=target></div>
 <script>
@@ -71,7 +71,7 @@ async function fetchThenJsonToDom() {
       controller.enqueue(tr);
     }
   });
-      
+
   const result = await fetch('bugs.json',
                              {
                                mode: 'same-origin',
