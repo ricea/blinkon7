@@ -2,6 +2,7 @@
 <title>Demo 5</title>
 <script src="streaming-element.js"></script>
 <script src="transform-stream-polyfill.js"></script>
+<script src="common.js"></script>
 <script src="parse-json.js"></script>
 <script src="split-stream.js"></script>
 <link rel=stylesheet href="common.css">
@@ -34,8 +35,7 @@
 </table>
 <div id=target></div>
 <script>
-let streaming = document.querySelector('#streaming');
-let target = document.querySelector('#target');
+let el = getElements(['target', 'streaming']);
 
 function appendChildWritableStream(parentNode) {
   return new WritableStream({
@@ -79,7 +79,7 @@ async function fetchThenJsonToDom() {
                                  'Cache-Control': 'no-cache, no-store'
                                }
                              });
-  const table = createTable(target);
+  const table = createTable(el.target);
   return result.body
     .pipeThrough(new TextDecoder())
     .pipeThrough(splitStream('\n'))
@@ -88,7 +88,7 @@ async function fetchThenJsonToDom() {
     .pipeTo(appendChildWritableStream(table));
 }
 
-streaming.onclick = async () => {
+el.streaming.onclick = async () => {
   setTimeout(fetchThenJsonToDom, 0);
 };
 

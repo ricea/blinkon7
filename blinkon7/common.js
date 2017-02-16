@@ -14,3 +14,11 @@ function loadOnTrigger(url) {
     document.querySelector('#next').style.visibility = 'visible';
   };
 }
+
+function getElements(elements) {
+    let el = {};
+    for (let element of elements) {
+        el[element] = document.getElementById(element);
+    }
+    return el;
+}

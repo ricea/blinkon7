@@ -24,26 +24,23 @@
   <tr>
     <td><button id="atonce">fetch &rightarrow; innerHTML</button>
   <button id="streaming">fetch &rightarrow; stream</button>
-  <button id="streaming-bp">streaming &rightarrow; stream + backpressure</button>
+  <button id="streaming_bp">streaming &rightarrow; stream + backpressure</button>
   <button id="reset">Reset</button>
     <td align=right id=next><a href=page4.html>Next >>></a>
 </table>
 <div id="target"></div>
 <script>
-let target = document.querySelector('#target');
-let atonce = document.querySelector('#atonce');
-let streaming = document.querySelector('#streaming');
-let streaming_bp = document.querySelector('#streaming-bp');
-let reset = document.querySelector('#reset');
-document.querySelector('#next').style.visibility = 'visible';
+let el = getElements(['target', 'atonce', 'streaming', 'streaming_bp', 'next',
+                      'reset']);
+el.next.style.visibility = 'visible';
 
 function resetTarget() {
-  target.innerHTML = '';
+  el.target.innerHTML = '';
 }
 
 async function fetchThenInnerHTML() {
   const bulk = document.createElement('div');
-  target.appendChild(bulk);
+  el.target.appendChild(bulk);
   const body = await fetch('bugs.html', {
     mode: 'same-origin',
     headers: {
@@ -56,7 +53,7 @@ async function fetchThenInnerHTML() {
 
 async function fetchThenStream(elementName) {
   const streamingElement = document.createElement(elementName);
-  target.appendChild(streamingElement);
+  el.target.appendChild(streamingElement);
   const result = await fetch('bugs.html', {
     mode: 'same-origin',
     headers: {
@@ -68,23 +65,23 @@ async function fetchThenStream(elementName) {
     .pipeTo(streamingElement.writable);
 }
 
-atonce.onclick = async () => {
+el.atonce.onclick = async () => {
   resetTarget();
   // Insert the html asynchronously to stop the browser whining that the onclick
   // handler is taking too long.
   setTimeout(fetchThenInnerHTML, 0);
 };
 
-streaming.onclick = async () => {
+el.streaming.onclick = async () => {
   resetTarget();
   setTimeout(() => fetchThenStream('streaming-element'), 0);
 };
 
-streaming_bp.onclick = async () => {
+el.streaming_bp.onclick = async () => {
   resetTarget();
   setTimeout(() => fetchThenStream('streaming-element-backpressure'), 0);
 };
 
-reset.onclick = resetTarget;
+el.reset.onclick = resetTarget;
 
 </script>

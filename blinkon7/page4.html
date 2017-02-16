@@ -36,8 +36,9 @@
 </table>
 <div><streaming-element id="target"></streaming-element></div>
 <script>
-let streaming = document.querySelector('#streaming');
-let streamingElement = document.querySelector('#target');
+let el = getElements(['target', 'streaming', 'next']);
+el.next.style.visibility = 'visible';
+
 document.querySelector('#next').style.visibility = 'visible';
 
 async function fetchThenJsonStream() {
@@ -65,10 +66,10 @@ async function fetchThenJsonStream() {
     .pipeThrough(splitStream('\n'))
     .pipeThrough(parseJSON())
     .pipeThrough(jsonToHTML)
-    .pipeTo(streamingElement.writable);
+    .pipeTo(el.target.writable);
 }
-  
-streaming.onclick = async () => {
+
+el.streaming.onclick = async () => {
   setTimeout(fetchThenJsonStream, 0);
 };
 
